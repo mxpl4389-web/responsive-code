@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Age Calculator – Designed by Prakash Kumar</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #74ebd5, #ACB6E5);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      padding: 20px;
+    }
+    h1 {
+      color: #fff;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+      margin-bottom: 20px;
+    }
+    .container {
+      background: #fff;
+      border-radius: 15px;
+      padding: 20px;
+      max-width: 400px;
+      width: 100%;
+      box-shadow: 0px 4px 15px rgba(0,0,0,0.2);
+      text-align: center;
+    }
+    label {
+      font-weight: bold;
+      display: block;
+      margin: 10px 0 5px;
+    }
+    input {
+      padding: 10px;
+      font-size: 16px;
+      width: 100%;
+      margin-bottom: 15px;
+      border: 2px solid #ccc;
+      border-radius: 8px;
+      text-align: center;
+    }
+    button {
+      background: #6a11cb;
+      background: linear-gradient(to right, #2575fc, #6a11cb);
+      border: none;
+      color: white;
+      padding: 12px 20px;
+      font-size: 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    button:hover {
+      transform: scale(1.05);
+    }
+    .results {
+      margin-top: 20px;
+      text-align: left;
+    }
+    .card {
+      background: #f9f9f9;
+      padding: 12px;
+      margin: 8px 0;
+      border-radius: 8px;
+      box-shadow: 1px 2px 6px rgba(0,0,0,0.1);
+    }
+  </style>
+</head>
+<body>
+  <h1>Age Calculator – Designed by Prakash Kumar</h1>
+  <div class="container">
+    <label for="day">Enter Date of Birth (DD MM YYYY):</label>
+    <div style="display: flex; gap: 5px;">
+      <input type="number" id="day" placeholder="DD" min="1" max="31">
+      <input type="number" id="month" placeholder="MM" min="1" max="12">
+      <input type="number" id="year" placeholder="YYYY" min="1900">
+    </div>
+    <button onclick="startLiveCalculation()">Calculate Age</button>
+    <div class="results" id="results"></div>
+  </div>
+
+  <script>
+    let intervalId;
+
+    function calculateAge(dob) {
+      let now = new Date();
+      let years = now.getFullYear() - dob.getFullYear();
+      let months = now.getMonth() - dob.getMonth();
+      let days = now.getDate() - dob.getDate();
+
+      if (days < 0) {
+        months--;
+        let prevMonth = new Date(now.getFullYear(), now.getMonth(), 0).getDate();
+        days += prevMonth;
+      }
+
+      if (months < 0) {
+        years--;
+        months += 12;
+      }
+
+      let diffMs = now - dob;
+      let totalDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+      let totalWeeks = Math.floor(totalDays / 7);
+      let totalHours = Math.floor(diffMs / (1000 * 60 * 60));
+      let totalMinutes = Math.floor(diffMs / (1000 * 60));
+      let totalSeconds = Math.floor(diffMs / 1000);
+
+      return `
+        <div class="card"><b>Years/Months/Days:</b> ${years} years, ${months} months, ${days} days</div>
+        <div class="card"><b>Total Months + Days:</b> ${years * 12 + months} months, ${days} days</div>
+        <div class="card"><b>Total Weeks + Days:</b> ${totalWeeks} weeks, ${totalDays % 7} days</div>
+        <div class="card"><b>Total Days:</b> ${totalDays} days</div>
+        <div class="card"><b>Total Hours:</b> ${totalHours} hours</div>
+        <div class="card"><b>Total Minutes:</b> ${totalMinutes} minutes</div>
+        <div class="card"><b>Total Seconds:</b> ${totalSeconds} seconds</div>
+      `;
+    }
+
+    function startLiveCalculation() {
+      let d = document.getElementById("day").value;
+      let m = document.getElementById("month").value - 1; 
+      let y = document.getElementById("year").value;
+
+      if (!d || !m || !y) {
+        alert("Please enter valid Date of Birth!");
+        return;
+      }
+
+      let dob = new Date(y, m, d);
+
+      if (intervalId) clearInterval(intervalId);
+
+      intervalId = setInterval(() => {
+        document.getElementById("results").innerHTML = calculateAge(dob);
+      }, 1000);
+    }
+  </script>
+</body>
+</html>
